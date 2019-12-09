@@ -8,6 +8,7 @@
 
     <modules>
         <module>loader</module>
+        <module>service</module>
     </modules>
 
     <properties>

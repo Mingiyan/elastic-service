@@ -25,7 +25,7 @@ public class AppImpl implements App {
         List<Person> personList = personService.findAll();
         List<String> idListPerson = new ArrayList<>();
 
-        if (!elasticService.indexExists("employee")) {
+        if (!elasticService.indexExists("person")) {
             for (Person person : personList) {
                 elasticService.create(personService.toMap(person), "person", person.getId());
             }
@@ -39,7 +39,7 @@ public class AppImpl implements App {
             }
         }
 
-        List<Map<String, Object>> listFromElastic = elasticService.searchAll("employee");
+        List<Map<String, Object>> listFromElastic = elasticService.searchAll("person");
         List<String> idListElastic = new ArrayList<>();
 
         for (Map<String, Object> map : listFromElastic) {

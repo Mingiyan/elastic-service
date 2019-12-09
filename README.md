@@ -1,25 +1,25 @@
 ## elastic-service
-##### Передача данных о пользователях в Elasticsearch
+##### Passing user data to Elasticsearch
 
-#### Модули:
-+ loader - грузит пользователей из базы 
-+ service - обертка над Elasticsearch
+#### Modules:
++ loader - loads users from the database
++ service - a wrapper over Elasticsearch
 
-#### Сборка проекта:
+#### Project assembly:
 
-##### Для сборки нужен *Maven 3.3.9* и выше
+##### To build, you need Maven *3.3.9* and higher
 
- собирается командой: 
+assembled by the command: 
  ```yaml
  mvn package
  ```
- или если в модулях нужно удалить папку `target`:
+or if you need to delete the folder in the modules `target`:
  ```yaml
 mvn clean package
 ```
 
-#### Запуск:
-После сборки в папке `target` модулей появятся файлы с расширением `jar`
+#### Launch:
+After assembly `target`, files with the extension will appear in the modules folder `jar`
 ##### loader
 
 ```yaml
@@ -31,4 +31,4 @@ java -jar loader-1.0-SNAPSHOT.jar
 ```yaml
 java -jar service-1.0-SNAPSHOT.jar
 ```
-после старта сервис доступен по порту 8102
+after start service is available on port 8102

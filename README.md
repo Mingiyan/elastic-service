@@ -29,6 +29,6 @@ java -jar loader-1.0-SNAPSHOT.jar
 ##### Service
 
 ```yaml
-java service-1.0-SNAPSHOT.jar
+java -jar service-1.0-SNAPSHOT.jar
 ```
 после старта сервис доступен по порту 8102

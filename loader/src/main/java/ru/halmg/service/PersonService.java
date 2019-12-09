@@ -7,11 +7,15 @@ import ru.halmg.api.ServiceCRUD;
 import ru.halmg.model.Person;
 import ru.halmg.repository.PersonRepository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
+/*
+ * here we do not need operations that can make changes to the database
+ */
 public class PersonService implements ServiceCRUD<String, Person>, Elastic<Person> {
 
     private PersonRepository personRepository;
@@ -20,8 +24,6 @@ public class PersonService implements ServiceCRUD<String, Person>, Elastic<Perso
     public PersonService(PersonRepository personRepository) {
         this.personRepository = personRepository;
     }
-
-    // here we do not need operations that can make changes to the database
 
     @Override
     public void save(Person object) {
@@ -49,7 +51,15 @@ public class PersonService implements ServiceCRUD<String, Person>, Elastic<Perso
     }
 
     @Override
-    public Map<String, Object> toMap(Person object) {
-        return null;
+    public Map<String, Object> toMap(Person person) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", person.getId());
+        map.put("name", person.getName());
+        map.put("city", person.getCity());
+        map.put("birthday", person.getBirthday());
+        map.put("departmentId", person.getDepartmentId());
+        map.put("positionId", person.getPositionId());
+        map.put("hash", person.hashCode());
+        return map;
     }
 }

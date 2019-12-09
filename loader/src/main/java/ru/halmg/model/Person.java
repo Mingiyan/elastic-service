@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class Person {
 
     @Id
-    private String string;
+    private String id;
 
     @Column(name = "name")
     private String name;

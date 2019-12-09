@@ -11,11 +11,11 @@
 
  собирается командой: 
  ```yaml
- mvn -s settings.xml package
+ mvn package
  ```
  или если в модулях нужно удалить папку `target`:
  ```yaml
-mvn -s settings.xml clean package
+mvn clean package
 ```
 
 #### Запуск:

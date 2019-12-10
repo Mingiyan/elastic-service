@@ -99,5 +99,4 @@ public class LoaderConfig {
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL82Dialect");
         return properties;
     }
-
 }

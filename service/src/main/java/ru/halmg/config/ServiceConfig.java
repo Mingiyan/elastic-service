@@ -25,7 +25,6 @@ public class ServiceConfig {
     @Value("${cluster.name}")
     private String clusterName;
 
-
     @Bean
     public Client elasticClient() throws UnknownHostException {
         Settings settings = Settings.EMPTY;

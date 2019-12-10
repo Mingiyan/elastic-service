@@ -19,7 +19,7 @@ mvn clean package
 ```
 
 #### Launch:
-After assembly `target`, files with the extension will appear in the modules folder `jar`
+After assembly, files with the `jar` extension will appear in the `target` folders of the modules
 ##### loader
 
 ```yaml

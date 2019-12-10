@@ -24,7 +24,7 @@ public class RestFullController {
         return "Welcome to Elastic Service.<br> " +
                 "Add '/api/service' to the link and the parameters 'index', 'type', 'query' for search<br>" +
                 "Example: <strong>/api/service?index=employee&type=name&query=${username}</strong><br>" +
-                "queryType options: id, code, name, department, position, grade, vacancyId, city.";
+                "queryType options: id, name, position, city.";
     }
 
     @ResponseBody

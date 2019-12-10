@@ -72,7 +72,7 @@ public class LoaderConfig {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
         em.setPersistenceProviderClass(HibernatePersistenceProvider.class);
-        em.setPackagesToScan("ru.geekfactory.homefinance.dao.model", "org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters");
+        em.setPackagesToScan("ru.halmg.model", "org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters");
         em.setJpaVendorAdapter(jpaVendorAdapter());
         em.setJpaProperties(additionalProperties());
         return em;

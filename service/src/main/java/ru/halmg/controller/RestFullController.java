@@ -22,7 +22,7 @@ public class RestFullController {
     @GetMapping("/")
     public String welcome() {
         return "Welcome to Elastic Service.<br> " +
-                "Add /api/service to the link and the parameters 'index', 'type', 'query' for search<br>" +
+                "Add '/api/service' to the link and the parameters 'index', 'type', 'query' for search<br>" +
                 "Example: <strong>/api/service?index=employee&type=name&query=${username}</strong><br>" +
                 "queryType options: id, code, name, department, position, grade, vacancyId, city.";
     }

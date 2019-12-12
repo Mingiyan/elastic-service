@@ -8,6 +8,7 @@ import ru.halmg.service.PersonService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AppImpl implements App {
 
@@ -26,9 +27,7 @@ public class AppImpl implements App {
         List<String> idListPerson = new ArrayList<>();
 
         if (!elasticService.indexExists("person")) {
-            for (Person person : personList) {
-                elasticService.create(personService.toMap(person), "person", person.getId());
-            }
+            personList.forEach(person -> elasticService.create(personService.toMap(person), "person", person.getId()));
         } else {
             for (Person person : personList) {
                 String hash = elasticService.getHashCode("person", person.getId());
@@ -40,19 +39,12 @@ public class AppImpl implements App {
         }
 
         List<Map<String, Object>> listFromElastic = elasticService.searchAll("person");
-        List<String> idListElastic = new ArrayList<>();
-
-        for (Map<String, Object> map : listFromElastic) {
-            if (map != null) {
-                idListElastic.add(map.get("id").toString());
-            }
-        }
+        List<String> idListElastic = listFromElastic.stream()
+                .map(map -> map.get("id").toString()).collect(Collectors.toList());
 
         idListElastic.removeAll(idListPerson);
 
-        for (String toDelete : idListElastic) {
-            elasticService.delete("person", toDelete);
-        }
+        idListElastic.forEach(toDelete -> elasticService.delete("person", toDelete));
 
         elasticService.closeClient();
     }

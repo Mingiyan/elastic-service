@@ -31,4 +31,4 @@ java -jar loader-1.0-SNAPSHOT.jar
 ```yaml
 java -jar service-1.0-SNAPSHOT.jar
 ```
-after start service is available on port 8102
+after start service is available on port 8102, added swagger

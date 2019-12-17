@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.halmg.service.ElasticService;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 public class RestFullController {
 
@@ -19,23 +22,17 @@ public class RestFullController {
     }
 
     @ResponseBody
-    @GetMapping("/")
-    public String welcome() {
-        return "Welcome to Elastic Service.<br> " +
-                "Add '/api/service' to the link and the parameters 'index', 'type', 'query' for search<br>" +
-                "Example: <strong>/api/service?index=employee&type=name&query=${username}</strong><br>" +
-                "queryType options: id, name, position, city.";
+    @GetMapping(value = "/api/service/search", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public List<Map<String, Object>> searchQuery(@RequestParam("index") String index,
+                                   @RequestParam("type") String type,
+                                   @RequestParam("query") String query) {
+        return elasticService.search(index, type, query);
     }
 
     @ResponseBody
-    @GetMapping(value = "/api/service", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public <T> T searchQuery(@RequestParam("index") String index,
-                             @RequestParam("type") String type,
-                             @RequestParam("query") String query) {
-        if ("id".equals(type)) {
-            return (T) elasticService.searchById(index, query);
-        } else {
-            return (T) elasticService.search(index, type, query);
-        }
+    @GetMapping(value = "/api/service/id", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public Map<String, Object> searchById(@RequestParam("index") String index,
+                                          @RequestParam("id") String id) {
+        return elasticService.searchById(index, id);
     }
 }

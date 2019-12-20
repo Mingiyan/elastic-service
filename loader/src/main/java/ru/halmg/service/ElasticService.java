@@ -36,14 +36,17 @@ public class ElasticService {
     }
 
     public List<Map<String, Object>> searchAll(String index) {
-        int listSize = (int) client.prepareSearch(index).get().getHits().getTotalHits();
-        SearchResponse response = client.prepareSearch(index).setSize(listSize).get();
+        SearchResponse searchResponse = client.prepareSearch(index)
+                .addSort(SortBuilders.scoreSort())
+                .setScroll(new TimeValue(60000))
+                .setQuery(QueryBuilders.matchAllQuery())
+                .get();
         List<Map<String, Object>> list = new ArrayList<>();
-        Iterator<SearchHit> searchHitIterator = response.getHits().iterator();
-        for (Iterator<SearchHit> iterator = searchHitIterator; iterator.hasNext(); ) {
-            SearchHit searchHit = iterator.next();
-            list.add(findById(index, searchHit.getId()));
-        }
+        do {
+            Arrays.stream(searchResponse.getHits().getHits()).map(SearchHit::getSourceAsMap).forEach(list::add);
+            searchResponse = client.prepareSearchScroll(searchResponse.getScrollId())
+                    .setScroll(new TimeValue(60000)).execute().actionGet();
+        } while (searchResponse.getHits().getHits().length != 0);
         return list;
     }
 

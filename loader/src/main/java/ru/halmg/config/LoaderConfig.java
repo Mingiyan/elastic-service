@@ -1,9 +1,8 @@
 package ru.halmg.config;
 
-import org.elasticsearch.client.Client;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.apache.http.HttpHost;
+import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,8 +20,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Properties;
 
 @Configuration
@@ -44,17 +41,11 @@ public class LoaderConfig {
     private String elasticHost;
     @Value("${elasticsearch.port}")
     private int elasticPort;
-    @Value("${cluster.name}")
-    private String clusterName;
 
     @Bean
-    public Client elasticClient() throws UnknownHostException {
-        Settings settings = Settings.EMPTY;
-        if (!"".equals(clusterName)) {
-            settings = Settings.builder().put("cluster.name", clusterName).build();
-        }
-        return new PreBuiltTransportClient(settings)
-                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(elasticHost), elasticPort));
+    public RestHighLevelClient client() {
+        return new RestHighLevelClient(RestClient.builder(
+                new HttpHost(elasticHost, elasticPort, "http")));
     }
 
     @Bean

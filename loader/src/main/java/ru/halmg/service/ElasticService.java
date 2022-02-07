@@ -1,18 +1,26 @@
 package ru.halmg.service;
 
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.indices.GetIndexRequest;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,45 +37,72 @@ public class ElasticService {
     }
 
     public String create(Map<String, Object> map, String index, String id) {
-        IndexResponse response = client.prepareIndex(index, index, id).setSource(map).get();
-        return response.getResult().toString();
+        IndexRequest indexRequest = new IndexRequest(index);
+        indexRequest.id(id);
+        indexRequest.source(map);
+        IndexResponse indexResponse = null;
+        try {
+            indexResponse = client.index(indexRequest, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return indexResponse.toString();
     }
 
     public String delete(String index, String id) {
-        DeleteResponse deleteResponse = client.prepareDelete(index, index, id).get();
+        DeleteRequest deleteRequest = new DeleteRequest(index, id);
+        DeleteResponse deleteResponse = null;
+        try {
+            deleteResponse = client.delete(deleteRequest, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return deleteResponse.toString();
     }
 
     public List<Map<String, Object>> searchAll(String index) {
-        SearchResponse searchResponse = client.prepareSearch(index)
-                .addSort(SortBuilders.scoreSort())
-                .setScroll(new TimeValue(60000))
-                .setQuery(QueryBuilders.matchAllQuery())
-                .get();
+        SearchRequest searchRequest = new SearchRequest(index);
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        sourceBuilder.query(QueryBuilders.matchAllQuery());
+        searchRequest.source(sourceBuilder);
+        SearchResponse searchResponse = null;
+        try {
+            searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         List<Map<String, Object>> list = new ArrayList<>();
-        do {
-            Arrays.stream(searchResponse.getHits().getHits()).map(SearchHit::getSourceAsMap).forEach(list::add);
-            searchResponse = client.prepareSearchScroll(searchResponse.getScrollId())
-                    .setScroll(new TimeValue(60000)).execute().actionGet();
-        } while (searchResponse.getHits().getHits().length != 0);
+        Arrays.stream(searchResponse.getHits().getHits()).map(SearchHit::getSourceAsMap).forEach(list::add);
         return list;
     }
 
-    public Map<String, Object> findById(String index, String id) {
-        GetResponse response = client.prepareGet(index, index, id).get();
-        return response.getSourceAsMap();
-    }
-
     public boolean indexExists(String index) {
-        return client.admin().indices().prepareExists(index).get().isExists();
+        GetIndexRequest getIndexRequest = new GetIndexRequest(index);
+        try {
+            return client.indices().exists(getIndexRequest, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public void deleteAll(String index) {
-        client.admin().indices().delete(new DeleteIndexRequest(index)).actionGet();
+        DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest(index);
+        try {
+            client.indices().delete(deleteIndexRequest, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getHashCode(String index, String id) {
-        GetResponse response = client.prepareGet(index, index, id).get();
+        GetRequest getRequest = new GetRequest(index, id);
+        GetResponse response = null;
+        try {
+            response = client.get(getRequest, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if (response.getSource()== null || response.getSource().get("hash") == null) {
             return null;
         }
@@ -75,6 +110,10 @@ public class ElasticService {
     }
 
     public void closeClient() {
-        client.close();
+        try {
+            client.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

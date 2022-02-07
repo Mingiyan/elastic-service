@@ -20,7 +20,7 @@ public class ServiceConfig {
     private int elasticPort;
 
     @Bean
-    public RestHighLevelClient elasticClient() {
+    public RestHighLevelClient client() {
         return new RestHighLevelClient(RestClient.builder(
                 new HttpHost(elasticHost, elasticPort, "http")));
     }

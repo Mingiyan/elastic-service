@@ -16,7 +16,7 @@
         <hibernate>5.4.2.Final</hibernate>
         <postgresql>42.2.25</postgresql>
         <spring-boot>2.1.9.RELEASE</spring-boot>
-        <elastic>7.6.1</elastic>
+        <elastic>7.14.0</elastic>
         <openapi>1.1.44</openapi>
     </properties>
 

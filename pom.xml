@@ -14,7 +14,7 @@
     <properties>
         <lombok>1.16.20</lombok>
         <hibernate>5.4.24.Final</hibernate>
-        <postgresql>42.3.3</postgresql>
+        <postgresql>42.4.1</postgresql>
         <spring-boot>2.5.11</spring-boot>
         <elastic>7.14.0</elastic>
         <openapi>1.1.44</openapi>
